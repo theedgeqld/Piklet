@@ -2,7 +2,7 @@ from model.sensor import Sensor
 import RPi.GPIO as GPIO
 import time
 
-class lightsensor(Sensor):
+class light(Sensor):
     def __init__(self, scratch, *args, **kwargs):
         Sensor.__init__(self, scratch, *args, **kwargs)
         GPIO.setmode(GPIO.BCM)
@@ -22,19 +22,3 @@ class lightsensor(Sensor):
             measurement += 1
 
         return measurement
-
-
-    """def RCtime(self, PiPin):
-        measurement = 0
-        # Discharge capacitor
-        GPIO.setup(PiPin, GPIO.OUT)
-        GPIO.output(PiPin, GPIO.LOW)
-        time.sleep(0.1)
-
-        GPIO.setup(PiPin, GPIO.IN)
-        # Count loops until voltage across
-        # capacitor reads high on GPIO
-        while (GPIO.input(PiPin) == GPIO.LOW):
-            measurement += 1
-
-        return measurement"""

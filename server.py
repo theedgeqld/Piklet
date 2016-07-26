@@ -50,7 +50,7 @@ class Server:
             self.sensors.tick()
             self.scratch.tick()
 
-            time.sleep(0.1)
+            time.sleep(0.05)
 
 #Called if file not imported by another python program
 if __name__ == "__main__":
