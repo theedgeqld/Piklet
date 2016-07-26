@@ -1,0 +1,2 @@
+Disable Serial TTY in the boot config file
+sudo apt-get install python3-smbus python3-serial
