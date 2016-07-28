@@ -13,6 +13,10 @@ class ScratchComms:
         EventHandler.addListener("packet-received", self.packetReceieved)
 
     def connect(self):
+        """
+        When called, it connects to Scratch
+        :return:
+        """
         try:
             self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.socket.connect(self.address)
@@ -22,6 +26,11 @@ class ScratchComms:
             return False
 
     def getPacketLengthBytes(self, packet):
+        """
+        Generates a packet header with the packet length
+        :param packet:
+        :return: 4 Bytes of the packet length as a header
+        """
         if sys.version[0] == "2":
             n = len(packet)
             a = array('c')
@@ -37,6 +46,11 @@ class ScratchComms:
 
 
     def sendScratchCommand(self, command):
+        """
+        Packs a packet with the header byte and string command provided
+        :param command: Valid scratch string command
+        :return:
+        """
         print(command)
         if sys.version[0] == "2":
             self.socket.send(self.getPacketLengthBytes(command) + command)

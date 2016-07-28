@@ -11,12 +11,7 @@ class Server:
         self.running = False
 
         self.scratch = ScratchComms("localhost")
-        connected = self.scratch.connect()
-        if connected:
-            print("Connected to scratch.")
-        else:
-            print("Failed to connect. Exiting")
-            sys.exit(-1)
+        self.connected = False
 
         self.sensors = SensorManager(self.scratch)
 
@@ -47,8 +42,15 @@ class Server:
 
         while self.running:
 
-            self.sensors.tick()
-            self.scratch.tick()
+            if not self.connected:
+                self.connected = self.scratch.connect()
+
+                if self.connected:
+                    print("Connected to scratch!")
+
+            else:
+                self.sensors.tick()
+                self.scratch.tick()
 
             time.sleep(0.05)
 

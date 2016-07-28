@@ -9,6 +9,7 @@ class accelerometer(Sensor):
         Sensor.__init__(self, scratch, *args, **kwargs)
         self.scratch = scratch
 
+        #External driver located under drivers/adxl345.py
         self.accelerometer = ADXL345()
 
         print("Enabling Accelerometer")
@@ -19,15 +20,28 @@ class accelerometer(Sensor):
 
         self.threshold = 0.01
 
+    def setRegister(self, key, value):
+        if key == "threshold":
+            self.threshold = eval(value)
+
     def tick(self):
+        """
+        Called regularly. If the accelerometer has a new value
+        and that new value is beyond the change threshold, it sends
+         it to scratch.
+        :return:
+        """
+
         axes = self.accelerometer.getAxes(True)
 
         if abs(axes['x']-self.lastValueX) > self.threshold:
             self.scratch.updateSensor("accelerometer-x", axes['x'])
             self.lastValueX = axes['x']
+
         elif abs(axes['y'] - self.lastValueY) > self.threshold:
             self.scratch.updateSensor("accelerometer-y", axes['y'])
             self.lastValueY = axes['y']
+
         elif abs(axes['z'] - self.lastValueZ) > self.threshold:
             self.scratch.updateSensor("accelerometer-z", axes['z'])
             self.lastValueZ = axes['z']

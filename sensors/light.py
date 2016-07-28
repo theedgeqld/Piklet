@@ -7,9 +7,21 @@ class light(Sensor):
         Sensor.__init__(self, scratch, *args, **kwargs)
         GPIO.setmode(GPIO.BCM)
 
+        self.threshold = 1
+        self.lastValue = 0
+
+        self.pin = eval(self.data)
+
+    def setRegister(self, key, value):
+        if key == "threshold":
+            self.threshold = eval(value)
+
     def tick(self):
-        self.scratch.updateSensor("light", self.RCtime(13))
-        self.scratch.broadcast("light-updated")
+        value = self.RCtime(self.pin)
+        if abs(value-self.lastValue) > self.threshold:
+            self.scratch.updateSensor("light", value)
+            self.scratch.broadcast("light-updated")
+            self.lastValue = value
 
     def RCtime(self, pin):
         GPIO.setup(pin, GPIO.OUT)

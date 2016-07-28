@@ -130,7 +130,6 @@ class SensorManager:
         :return:
         """
         for sensorName in self.sensors:
-            print(sensorName)
             sensor = self.sensors[sensorName]
             if issubclass(sensor.__class__, Sensor):
                 sensor.tick()
