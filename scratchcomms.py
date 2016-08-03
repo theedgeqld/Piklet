@@ -109,6 +109,3 @@ class ScratchComms:
             pass
         if rx:
             EventHandler.callEvent("packet-received", rx)
-
-
-

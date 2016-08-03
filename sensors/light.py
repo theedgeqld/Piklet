@@ -32,5 +32,4 @@ class light(Sensor):
         measurement = 0
         while (GPIO.input(pin) == GPIO.HIGH):
             measurement += 1
-
         return measurement

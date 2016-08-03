@@ -1,2 +1,1 @@
-Disable Serial TTY in the boot config file
-sudo apt-get install python3-smbus python3-serial
+sudo wget https://raw.githubusercontent.com/theedgeqld/Piklet/master/install.sh && sudo sh install.sh

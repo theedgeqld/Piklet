@@ -45,5 +45,4 @@ class accelerometer(Sensor):
         elif abs(axes['z'] - self.lastValueZ) > self.threshold:
             self.scratch.updateSensor("accelerometer-z", axes['z'])
             self.lastValueZ = axes['z']
-
         self.scratch.broadcast("accelerometer-updated")
