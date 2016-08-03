@@ -31,3 +31,4 @@ class template(Sensor):
             number = self.data
 
         self.scratch.updateSensor("template-sensor", number)
+        self.scratch.broadcast("template-updated")

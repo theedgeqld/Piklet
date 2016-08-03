@@ -22,6 +22,8 @@ class sound(Sensor):
 
     def tick(self):
         volume = self.getSoundLevel()
+        if not volume:
+            volume = 0
 
         if abs(volume-self.lastValue) > self.threshold:
             self.scratch.updateSensor("sound", volume)
@@ -29,10 +31,14 @@ class sound(Sensor):
             self.lastValue = volume
 
     def setRegister(self, key, value):
-        if self.key == "threshold":
-            self.threshold = eval(value)
+        print("Set register {} to {}".format(key, value))
+        print(key)
+        if key == "threshold":
+            print("Thresholding...")
+            self.threshold = int(value)
+            print("Set sound sensor threshold to {}".format(self.threshold))
 
     def getSoundLevel(self):
         self.bus.write_byte(self.address, self.adcRegister)
         self.bus.read_byte(self.address)  # dummy read to start conversion
-        volume = self.bus.read_byte(self.address)
+        return self.bus.read_byte(self.address)

@@ -100,6 +100,11 @@ class ScratchComms:
         rx = None
         try:
             rx = self.socket.recv(1024)
+            if rx == b'':
+                self.socket.close()
+                self.socket = None
+                print("Disconnected")
+                EventHandler.callEvent("scratch-disconnect", None)
         except:
             pass
         if rx:

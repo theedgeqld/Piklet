@@ -29,7 +29,7 @@ class SensorManager:
         :return:
         """
 
-        files = os.listdir("sensors/")
+        files = os.listdir(__file__.replace("sensormanager.py", "")+"sensors/")
         sensorDrivers = [file.replace(".py", "") for file in files if file.endswith(".py") and not file == "__init__.py"]
         return sensorDrivers
 
@@ -95,7 +95,7 @@ class SensorManager:
             else:
                 try:
                     self.sensors[uniqueSensorID].setRegister(sensorRegister, value)
-                except:
+                except KeyError:
                     print("The specified sensor has not been enabled.")
 
     def enableSensor(self, sensorID, sensorClass, data=None):
