@@ -6,16 +6,22 @@ if [ $(id -u) != "0" ]; then
   exit 1
 fi
 
+echo "Installing piklet software..."
+
 #Variables
 username="pi"
 
 #Install dependancies
-sudo apt-get -qq -y --force-yes install git screen python3-smbus python-smbus i2c-tools 
+echo "Installing dependancies"
+sudo apt-get -q -y --force-yes install git screen python3-smbus python-smbus i2c-tools 
 
+echo "Downloading piklet code..."
 #Installs the Piklet code
 cd /opt
 sudo git clone https://github.com/theedgeqld/Piklet
+cd Piklet
 
+echo "Enabling sensor I2C and SPI drivers..."
 #Enables I2C & SPI
 sed -i.bak "/i2c-bcm2708/d" /etc/modules
 sed -i.bak "/i2c-dev/d" /etc/modules
@@ -29,18 +35,22 @@ else
   echo "Driver file not found"
 fi
 
+echo "Generating run_server.sh"
 #Generates run_server.sh
 echo "#!/bin/bash\nsudo screen -dmLS PikletServer sudo python3 $pythonDir/server.py && echo Started server. Check screenlog.0 for details." > run_server.sh
 chmod 755 run_server.sh
 
+echo "Generating stop_server.sh"
 #Generates stop_server.sh
 echo "#!/bin/bash\nsudo screen -X -S PikletServer kill" > stop_server.sh
 chmod 755 stop_server.sh
 
+echo "Generating restart_server.sh"
 #Generates restart_server.sh
 echo "#!/bin/bash\nsudo sh stop_server.sh && sudo sh run_server.sh" > restart_server.sh
 chmod 755 restart_server.sh
 
+echo "Adding startup hook..."
 #Adds startup hook. Runs run_server when the user specified in the variable username logs in.
 sed -i.bak "/@lxterminal.*/d" /home/$username/.config/lxsession/LXDE-pi/autostart
 echo "@lxterminal -e '$PWD/run_server.sh'" >> /home/$username/.config/lxsession/LXDE-pi/autostart
