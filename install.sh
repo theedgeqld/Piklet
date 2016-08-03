@@ -37,7 +37,7 @@ fi
 
 echo "Generating run_server.sh"
 #Generates run_server.sh
-echo "#!/bin/bash\nsudo screen -dmLS PikletServer sudo python3 $pythonDir/server.py && echo Started server. Check screenlog.0 for details." > run_server.sh
+echo "#!/bin/bash\nsudo screen -dmLS PikletServer sudo python3 $PWD/server.py && echo Started server. Check screenlog.0 for details." > run_server.sh
 chmod 755 run_server.sh
 
 echo "Generating stop_server.sh"
