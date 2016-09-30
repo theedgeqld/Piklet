@@ -8,15 +8,8 @@ https://github.com/richardghirst/PiBits/tree/master/ServoBlaster
 import RPi.GPIO as GPIO
 
 class LB1930MC:
-    def __init__(self, pins=None, motor=None):
+    def __init__(self, pins):
         self.pins = pins
-
-        if motor == "L":
-            self.pins = (17, 4)
-        elif motor == "C":
-            self.pins = (23, 18)
-        elif motor == "R":
-            self.pins = (22, 27)
 
         self.initPins()
 

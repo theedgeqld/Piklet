@@ -1,31 +1,31 @@
 from model.sensor import Sensor
 import smbus
+from drivers.mcp3208 import MCP3208
+from drivers.piklet import Piklet
+from util.runningaverage import RunningAverage
 
 class sound(Sensor):
     def __init__(self, scratch, *args, **kwargs):
         Sensor.__init__(self, scratch, *args, **kwargs)
-        self.bus = smbus.SMBus(1)
 
-        # This is the address we setup in the PCF8591
-        self.address = 0x48
+        self.adcChannel = Piklet.pins["SOUND"]
+        self.adc = MCP3208()
 
-        if self.data.lower() == "a1":
-            self.adcRegister = 0x40
-        elif self.data.lower() == "a2":
-            self.adcRegister = 0x41
-        elif self.data.lower() == "a3":
-            self.adcRegister = 0x42
+        self.average = RunningAverage(20)
 
         self.threshold = 3
-
         self.lastValue = 0
 
     def tick(self):
         volume = self.getSoundLevel()
+        print(volume)
+        self.average.add(volume)
+        self.deviation = volume - self.average.getAverage()
+
         if not volume:
             volume = 0
 
-        if abs(volume-self.lastValue) > self.threshold:
+        if abs(self.deviation) > self.threshold:
             self.scratch.updateSensor("sound", volume)
             self.scratch.broadcast("sound-updated")
             self.lastValue = volume
@@ -39,6 +39,4 @@ class sound(Sensor):
             print("Set sound sensor threshold to {}".format(self.threshold))
 
     def getSoundLevel(self):
-        self.bus.write_byte(self.address, self.adcRegister)
-        self.bus.read_byte(self.address)  # dummy read to start conversion
-        return self.bus.read_byte(self.address)
+        return self.adc.getValue(self.adcChannel)

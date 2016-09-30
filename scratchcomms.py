@@ -51,14 +51,10 @@ class ScratchComms:
         :param command: Valid scratch string command
         :return:
         """
-        try:
-            if sys.version[0] == "2":
-                self.socket.send(self.getPacketLengthBytes(command) + command)
-            elif sys.version[0] == "3":
-                self.socket.send(self.getPacketLengthBytes(command) + command.encode('utf-8'))
-        except ConnectionResetError:
-            self.disconnect()
-
+        if sys.version[0] == "2":
+            self.socket.send(self.getPacketLengthBytes(command) + command)
+        elif sys.version[0] == "3":
+            self.socket.send(self.getPacketLengthBytes(command) + command.encode('utf-8'))
 
     def broadcast(self, msg):
         EventHandler.callEvent("broadcast", msg)
@@ -88,15 +84,9 @@ class ScratchComms:
 
             while len(packet) >= 2:
                 key, value = packet[0], packet[1]
-
-                try:
-                    key = eval(key)
-                    self.variables[key] = value
-                    EventHandler.callEvent("variable-updated", (key, value))
-                except:
-                    print(key, value)
-                    print(packet)
-                    continue
+                key = eval(key)
+                self.variables[key] = value
+                EventHandler.callEvent("variable-updated", (key, value))
 
                 del packet[0]
                 del packet[0]
@@ -110,14 +100,11 @@ class ScratchComms:
         try:
             rx = self.socket.recv(1024)
             if rx == b'':
-                self.disconnect()
+                self.socket.close()
+                self.socket = None
+                print("Disconnected")
+                EventHandler.callEvent("scratch-disconnect", None)
         except:
             pass
         if rx:
             EventHandler.callEvent("packet-received", rx)
-
-    def disconnect(self):
-        self.socket.close()
-        self.socket = None
-        print("Disconnected")
-        EventHandler.callEvent("scratch-disconnect", None)

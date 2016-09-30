@@ -100,7 +100,6 @@ class Server:
                 self.scratch.tick()
 
                 if self.connected == False:
-                    self.createInfoDialog("Piklet disconnected from Scratch.")
                     break
 
             time.sleep(0.05)

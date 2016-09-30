@@ -1,16 +1,25 @@
 from model.sensor import Sensor
 import RPi.GPIO as GPIO
 import time
+from drivers.piklet import Piklet
+
+"""
+BE AWARE:
+B = GND
+R = SIG
+W = 5V
+"""
 
 class light(Sensor):
     def __init__(self, scratch, *args, **kwargs):
         Sensor.__init__(self, scratch, *args, **kwargs)
         GPIO.setmode(GPIO.BCM)
 
-        self.threshold = 1
+        self.threshold = 0.5
         self.lastValue = 0
 
-        self.pin = eval(self.data)
+        self.pin = Piklet.pins[self.data][1]
+        self.pwr = Piklet.pins[self.data][0]
 
     def setRegister(self, key, value):
         if key == "threshold":
@@ -24,12 +33,27 @@ class light(Sensor):
             self.lastValue = value
 
     def RCtime(self, pin):
+        """
+        Return ms of time taken * 4
+        :param pin:
+        :return:
+        """
+        GPIO.setup(self.pwr, GPIO.OUT)
         GPIO.setup(pin, GPIO.OUT)
-        GPIO.output(pin, GPIO.HIGH)
-        time.sleep(0.01)
 
+        GPIO.output(self.pwr, GPIO.HIGH)
+        GPIO.output(pin, GPIO.HIGH)
+        time.sleep(0.001)
+
+        time_start = time.time()
         GPIO.setup(pin, GPIO.IN)
-        measurement = 0
         while (GPIO.input(pin) == GPIO.HIGH):
-            measurement += 1
-        return measurement
+            pass
+        time_end = time.time()
+        GPIO.output(self.pwr, GPIO.LOW)
+
+        TO_MS = 1000
+        MULTIPLIER = 4.5        #Multiplier just makes the ms value higher than 22 to make it easier to work wi
+
+        time_dif = time_end - time_start
+        return round(time_dif*TO_MS*MULTIPLIER, 2)
