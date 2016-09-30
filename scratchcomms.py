@@ -51,11 +51,14 @@ class ScratchComms:
         :param command: Valid scratch string command
         :return:
         """
-        print(command)
-        if sys.version[0] == "2":
-            self.socket.send(self.getPacketLengthBytes(command) + command)
-        elif sys.version[0] == "3":
-            self.socket.send(self.getPacketLengthBytes(command) + command.encode('utf-8'))
+        try:
+            if sys.version[0] == "2":
+                self.socket.send(self.getPacketLengthBytes(command) + command)
+            elif sys.version[0] == "3":
+                self.socket.send(self.getPacketLengthBytes(command) + command.encode('utf-8'))
+        except ConnectionResetError:
+            self.disconnect()
+
 
     def broadcast(self, msg):
         EventHandler.callEvent("broadcast", msg)
@@ -85,9 +88,15 @@ class ScratchComms:
 
             while len(packet) >= 2:
                 key, value = packet[0], packet[1]
-                key = eval(key)
-                self.variables[key] = value
-                EventHandler.callEvent("variable-updated", (key, value))
+
+                try:
+                    key = eval(key)
+                    self.variables[key] = value
+                    EventHandler.callEvent("variable-updated", (key, value))
+                except:
+                    print(key, value)
+                    print(packet)
+                    continue
 
                 del packet[0]
                 del packet[0]
@@ -101,11 +110,14 @@ class ScratchComms:
         try:
             rx = self.socket.recv(1024)
             if rx == b'':
-                self.socket.close()
-                self.socket = None
-                print("Disconnected")
-                EventHandler.callEvent("scratch-disconnect", None)
+                self.disconnect()
         except:
             pass
         if rx:
             EventHandler.callEvent("packet-received", rx)
+
+    def disconnect(self):
+        self.socket.close()
+        self.socket = None
+        print("Disconnected")
+        EventHandler.callEvent("scratch-disconnect", None)

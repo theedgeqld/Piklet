@@ -105,11 +105,13 @@ class SensorManager:
         :param sensorClass:
         :param data:
         """
-        try:
-            self.sensors[sensorID] = sensorClass(self.scratch, data=data)
-            print("Enabled {}".format(sensorID))
-        except:
-            print("Error enabling {}".format(sensorID))
+        #try:
+        sensor = sensorClass(self.scratch, data=data)
+        sensor.start()
+        self.sensors[sensorID] = sensor
+        print("Enabled {}".format(sensorID))
+        #except:
+        #    print("Error enabling {}".format(sensorID))
 
     def disableSensor(self, sensorID):
         """
@@ -122,6 +124,10 @@ class SensorManager:
             print("Disabled {}".format(sensorID))
         except:
             print("{} sensor has not been enabled.".format(sensorID))
+
+    def stop(self):
+        for sensorID in self.sensors:
+            self.disableSensor(sensorID)
 
     def tick(self):
         """

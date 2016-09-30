@@ -24,6 +24,10 @@ class template(Sensor):
             else:
                 self.randomNumbers = False
 
+        if key == "raiseerror":
+            if value == "1":
+                raise Exception
+
     def tick(self):
         if self.randomNumbers:
             number = random.randint(0, 10)

@@ -3,6 +3,7 @@ from sensormanager import SensorManager
 from event.eventhandler import EventHandler
 from tkinter import *
 import time, traceback, sys
+from drivers.lb1930mc import LB1930MC
 
 
 class Server:
@@ -23,18 +24,27 @@ class Server:
         Called when server starts
         :return:
         """
+        self.startupEdgeCase()
         self.running = True
         self.loop()
 
-    def stop(self):
+    def startupEdgeCase(self):
+        LB1930MC(motor="L").stop()
+
+
+    def stop(self, window=None):
         """
         Call to stop server
         :return:
         """
+        if window:
+            window.destroy()
         self.running = False
+        self.createInfoDialog("The Piklet has stopped running.")
 
     def onScratchDisconnect(self, data):
         self.connected = False
+        self.sensors.stop()
         print("Scratch disconnected")
 
     def createInfoDialog(self, message):
@@ -45,10 +55,22 @@ class Server:
         b.pack(pady=5)
         root.mainloop()
 
+    def createSmallErrorDialog(self, message):
+        root = Tk()
+        root.title("Piklet")
+        Label(root, text="The Piklet code has crashed!").pack(padx=5)
+        b = Button(root, text="Ignore", command=lambda: root.destroy())
+        b.pack(pady=5)
+        b = Button(root, text="View Error", command=lambda: self.createErrorDialog(message))
+        b.pack(pady=5)
+        b = Button(root, text="Stop Piklet", command=lambda: self.stop(window=root))
+        b.pack(pady=5)
+        root.mainloop()
+
     def createErrorDialog(self, message):
         root = Tk()
         root.title("Piklet")
-        Label(root, text=message).pack(padx=5)
+        Label(root, text=message, justify=LEFT).pack(padx=5)
         b = Button(root, text="OK", command=lambda: root.destroy())
         b.pack(pady=5)
         root.mainloop()
@@ -64,18 +86,20 @@ class Server:
         """
 
         while self.running:
-            while self.connected == False:
+            if self.connected == False:
                 self.connected = self.scratch.connect()
                 if self.connected:
                     self.createInfoDialog("Piklet connected to Scratch.")
-                else:
-                    self.createInfoDialog("Piklet disconnected from Scratch.")
                 time.sleep(5)
 
 
             else:
                 self.sensors.tick()
                 self.scratch.tick()
+
+                if self.connected == False:
+                    self.createInfoDialog("Piklet disconnected from Scratch.")
+                    break
 
             time.sleep(0.05)
 
@@ -91,10 +115,10 @@ if __name__ == "__main__":
             server.start()
         except KeyboardInterrupt:
             server.stop()
-        finally:
-            exc_type, exc_value, exc_traceback = sys.exc_info()
+        except:
             print("Exception in user code:")
             print('-' * 60)
-            traceback.print_exception(exc_type, exc_value, exc_traceback, limit=2)
+            print("".join(traceback.format_exception(*sys.exc_info())))
+            server.createSmallErrorDialog("".join(traceback.format_exception(*sys.exc_info())))
             print('-' * 60)
             errorCount += 1

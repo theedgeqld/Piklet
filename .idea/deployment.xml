@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" autoUpload="On explicit save action" serverName="TheEdgeSLQ">
+  <component name="PublishConfigData" autoUpload="On explicit save action" serverName="TheEdgeSLQ" promptOnLocalOverwrite="false">
     <serverData>
       <paths name="TheEdgeSLQ">
         <serverdata>
           <mappings>
-            <mapping deploy="/home/pi/john/python" local="$PROJECT_DIR$" web="/" />
+            <mapping deploy="/opt/Piklet" local="$PROJECT_DIR$" web="/" />
           </mappings>
         </serverdata>
       </paths>
