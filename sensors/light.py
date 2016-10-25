@@ -7,7 +7,7 @@ from drivers.piklet import Piklet
 BE AWARE:
 B = GND
 R = SIG
-W = 5V
+W = SIG
 """
 
 class light(Sensor):
@@ -18,8 +18,8 @@ class light(Sensor):
         self.threshold = 0.5
         self.lastValue = 0
 
-        self.pin = Piklet.pins[self.data][1]
-        self.pwr = Piklet.pins[self.data][0]
+        self.pin = Piklet.pins[self.data][0]
+        self.pwr = Piklet.pins[self.data][1]
 
     def setRegister(self, key, value):
         if key == "threshold":
@@ -27,6 +27,7 @@ class light(Sensor):
 
     def tick(self):
         value = self.RCtime(self.pin)
+        print(value)
         if abs(value-self.lastValue) > self.threshold:
             self.scratch.updateSensor("light", value)
             self.scratch.broadcast("light-updated")

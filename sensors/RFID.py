@@ -10,6 +10,7 @@ class RFID(ThreadedSensor):
 
         self.serial = serial.Serial('/dev/ttyAMA0', 115200)
         self.lastCheckTime = 0
+        self.lastTag = ""
 
     def start(self):
         self.wakeRFID()
@@ -26,7 +27,8 @@ class RFID(ThreadedSensor):
             id = self.readRFID()
 
             #If it's been longer than 1 second since it last sent a message to scratch...
-            if time.time() - self.lastCheckTime > 1:
+            if time.time() - self.lastCheckTime > 1 or self.lastTag != id:
+                self.lastTag = id
 
                 self.scratch.updateSensor("rfid", id)
                 self.scratch.broadcast("rfid-updated")
@@ -37,7 +39,9 @@ class RFID(ThreadedSensor):
         self.serial.write(RFID.COMMAND_WAKE)
 
     def readRFID(self):
+        self.serial.flush()
         self.serial.write(RFID.COMMAND_READ)
+        self.serial.flushInput()
         rx = self.serial.read(25)
         id = "".join(list([str(x) for x in rx]))
         return id

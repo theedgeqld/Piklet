@@ -82,6 +82,8 @@ class ScratchComms:
             has sorted through all the key-value pairs.
             """
 
+            #try:
+
             while len(packet) >= 2:
                 key, value = packet[0], packet[1]
                 key = eval(key)
@@ -90,6 +92,8 @@ class ScratchComms:
 
                 del packet[0]
                 del packet[0]
+            #except:
+                #print("Error occured.")
 
         elif command == "broadcast":
             value = eval(packet[1])

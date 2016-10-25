@@ -2,9 +2,10 @@ import RPi.GPIO as GPIO
 import time
 
 class HCSR04:
-    def __init__(self, pins=(24, 25)):
+    def __init__(self, pins=(25, 24)):
         self.triggerPin, self.echoPin = pins
         self.initPins()
+        self.settleSensor()
 
     def initPins(self):
         """
@@ -44,7 +45,7 @@ class HCSR04:
         :return:
         """
         GPIO.output(self.triggerPin, True)
-        time.sleep(0.0001)
+        time.sleep(0.001)
         GPIO.output(self.triggerPin, False)
 
     def getPingDuration(self):
@@ -52,6 +53,9 @@ class HCSR04:
         Times the pulse
         :return: pulse time in 10ths of a ms (?)
         """
+        pulseEnd = 0
+        pulseStart = 0
+
         while GPIO.input(self.echoPin) == 0:
             pulseStart = time.time()
 

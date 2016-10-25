@@ -32,7 +32,10 @@ class accelerometer(Sensor):
         :return:
         """
 
+        #print("tick: accelerometer")
+
         axes = self.accelerometer.getAxes(True)
+        print(axes)
 
         if abs(axes['x']-self.lastValueX) > self.threshold:
             self.scratch.updateSensor("accelerometer-x", axes['x'])

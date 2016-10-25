@@ -13,12 +13,11 @@ class sound(Sensor):
 
         self.average = RunningAverage(20)
 
-        self.threshold = 3
+        self.threshold = 1
         self.lastValue = 0
 
     def tick(self):
         volume = self.getSoundLevel()
-        print(volume)
         self.average.add(volume)
         self.deviation = volume - self.average.getAverage()
 
