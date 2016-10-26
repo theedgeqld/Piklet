@@ -8,7 +8,7 @@ class ultrasonic(Sensor):
         self.pins = Piklet.pins[self.data]
 
     def start(self):
-        self.ultrasonic = HCSR04()
+        self.ultrasonic = HCSR04(pins=self.pins)
 
     def stop(self):
         pass

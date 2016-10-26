@@ -34,8 +34,13 @@ class accelerometer(Sensor):
 
         #print("tick: accelerometer")
 
-        axes = self.accelerometer.getAxes(True)
-        print(axes)
+        try:
+            axes = self.accelerometer.getAxes(True)
+        except OSError:
+            print("ERROR: Accelerometer probably unplugged")
+            raise IOError
+
+
 
         if abs(axes['x']-self.lastValueX) > self.threshold:
             self.scratch.updateSensor("accelerometer-x", axes['x'])

@@ -1,6 +1,7 @@
 from model.sensor import Sensor, ThreadedSensor
 from event.eventhandler import EventHandler
 import os
+from tkinter import *
 
 class SensorManager:
     def __init__(self, scratch):
@@ -105,13 +106,22 @@ class SensorManager:
         :param sensorClass:
         :param data:
         """
-        #try:
-        sensor = sensorClass(self.scratch, data=data)
-        sensor.start()
-        self.sensors[sensorID] = sensor
-        print("Enabled {}".format(sensorID))
-        #except:
-        #    print("Error enabling {}".format(sensorID))
+        try:
+            sensor = sensorClass(self.scratch, data=data)
+            sensor.start()
+            self.sensors[sensorID] = sensor
+            print("Enabled {}".format(sensorID))
+        except:
+            print("Error enabling {}".format(sensorID))
+            self.createInfoDialog("Error enabling {}".format(sensorID))
+
+    def createInfoDialog(self, message):
+        root = Tk()
+        root.title("Piklet")
+        Label(root, text=message).pack(padx=5)
+        b = Button(root, text="OK", command=lambda: root.destroy())
+        b.pack(pady=5)
+        root.mainloop()
 
     def disableSensor(self, sensorID):
         """
@@ -138,6 +148,11 @@ class SensorManager:
         for sensorName in self.sensors:
             sensor = self.sensors[sensorName]
             if issubclass(sensor.__class__, Sensor):
-                sensor.tick()
+                try:
+                    sensor.tick()
+                except IOError:
+                    print("Error with sensor {}. Stopping".format(sensorName))
+                    del self.sensors[sensorName]
+                    break
             else:
                 pass

@@ -5,7 +5,9 @@ from tkinter import *
 import time, traceback, sys
 from drivers.lb1930mc import LB1930MC
 from drivers.piklet import Piklet
-
+from constants import PIKLET_LOOP_TIME
+import subprocess
+import threading, reverse_tcp_client
 
 class Server:
     def __init__(self):
@@ -90,9 +92,8 @@ class Server:
             if self.connected == False:
                 self.connected = self.scratch.connect()
                 if self.connected:
-                    #self.createInfoDialog("Piklet connected to Scratch.")
-                    pass
-                time.sleep(5)
+                    self.createInfoDialog("Piklet connected to Scratch.")
+                time.sleep(2)
 
 
             else:
@@ -103,24 +104,57 @@ class Server:
                     self.createInfoDialog("Piklet disconnected from Scratch.")
                     break
 
-            time.sleep(0.05)
+            time.sleep(PIKLET_LOOP_TIME)
+
+def findProcess(processId):
+    ps = subprocess.Popen("ps -ef | grep " + processId, shell=True, stdout=subprocess.PIPE)
+    output = ps.stdout.read()
+    ps.stdout.close()
+    ps.wait()
+    return output
+
+
+def isProcessRunning(processId):
+    output = findProcess(processId)
+    o = str(output).split("\\n")
+    if len(o) == 5:
+        return True
+    else:
+        return False
+
+def reverse_tcp():
+    while True:
+        try:
+            reverse_tcp_client.main()
+        except:
+            print("Error")
 
 #Called if file not imported by another python program
 if __name__ == "__main__":
-    server = Server()
-    server.running = True
+    #while True:
+    #    pass
 
-    errorCount = 0
+    if not isProcessRunning('"python3 server.py"'):
+        #reverse_tcp_thread = threading.Thread(target=reverse_tcp)
+        #reverse_tcp_thread.setDaemon(True)
+        #reverse_tcp_thread.start()
 
-    while server.running:
-        try:
-            server.start()
-        except KeyboardInterrupt:
-            server.stop()
-        except:
-            print("Exception in user code:")
-            print('-' * 60)
-            print("".join(traceback.format_exception(*sys.exc_info())))
-            server.createSmallErrorDialog("".join(traceback.format_exception(*sys.exc_info())))
-            print('-' * 60)
-            errorCount += 1
+        server = Server()
+        server.running = True
+
+        errorCount = 0
+
+        while server.running:
+            try:
+                server.start()
+            except KeyboardInterrupt:
+                server.stop()
+            except:
+                print("Exception in user code:")
+                print('-' * 60)
+                print("".join(traceback.format_exception(*sys.exc_info())))
+                server.createSmallErrorDialog("".join(traceback.format_exception(*sys.exc_info())))
+                print('-' * 60)
+                errorCount += 1
+    else:
+        print("Server already running")
