@@ -3,6 +3,8 @@ from drivers.hcsr04 import HCSR04
 from drivers.piklet import Piklet
 
 class ultrasonic(Sensor):
+    pinGroup = "digital"
+
     def __init__(self, scratch, *args, **kwargs):
         Sensor.__init__(self, scratch, *args, **kwargs)
         self.pins = Piklet.pins[self.data]

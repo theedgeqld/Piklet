@@ -4,6 +4,8 @@ import time
 from drivers.piklet import Piklet
 
 class analogout(Sensor):
+    pinGroup = "digital"
+
     def __init__(self, scratch, *args, **kwargs):
         Sensor.__init__(self, scratch, *args, **kwargs)
         GPIO.setmode(GPIO.BCM)

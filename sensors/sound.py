@@ -5,6 +5,8 @@ from drivers.piklet import Piklet
 from util.runningaverage import RunningAverage
 
 class sound(Sensor):
+    pinGroup = "analog"
+
     def __init__(self, scratch, *args, **kwargs):
         Sensor.__init__(self, scratch, *args, **kwargs)
 

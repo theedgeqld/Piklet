@@ -3,6 +3,8 @@ from drivers.lb1930mc import LB1930MC
 from drivers.piklet import Piklet
 
 class motor(Sensor):
+    pinGroup = "motor"
+
     def __init__(self, scratch, *args, **kwargs):
         Sensor.__init__(self, scratch, *args, **kwargs)
 

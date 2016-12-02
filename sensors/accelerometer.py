@@ -5,6 +5,7 @@ from drivers.adxl345 import ADXL345
 from model.sensor import Sensor
 
 class accelerometer(Sensor):
+
     def __init__(self, scratch, *args, **kwargs):
         Sensor.__init__(self, scratch, *args, **kwargs)
         self.scratch = scratch

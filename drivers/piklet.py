@@ -17,8 +17,58 @@ class Piklet:
         "MC": (23, 18),
         "SOUND": 7,
         "STATUS_LED": [6],
+        "UART": "/dev/ttyAMA0"
+    }
+
+    pinGroups = {
+        "digital": [
+            "D2",
+            "D3",
+            "D4",
+            "D5",
+            "D6",
+            "D7",
+            "D8",
+        ],
+        "SPI": [
+            "SPI0",
+            "SPI1"
+        ],
+        "motor": [
+            "M1",
+            "M2",
+            "M3",
+            "ML",
+            "MC",
+            "MR"
+        ],
+        "light": [
+            "STATUS_LED"
+        ],
+        "analog": [
+            "SOUND"
+        ],
+        "serial": [
+            "UART"
+        ]
     }
 
     @staticmethod
     def getPinGroup(id):
         return Piklet.pins[id]
+
+    def groupContains(self, group, pin):
+        if group == None:
+            return True
+
+        if pin in Piklet.pinGroups[group]:
+            return True
+        else:
+            return False
+
+    def pinsInGroup(group):
+        if group == None:
+            return list(Piklet.pins.keys())
+
+        else:
+            return Piklet.pinGroups[group]

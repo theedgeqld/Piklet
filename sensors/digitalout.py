@@ -3,6 +3,8 @@ import RPi.GPIO as GPIO
 from drivers.piklet import Piklet
 
 class digitalout(Sensor):
+    pinGroup = "digital"
+
     def __init__(self, scratch, *args, **kwargs):
         Sensor.__init__(self, scratch, *args, **kwargs)
         GPIO.setmode(GPIO.BCM)
