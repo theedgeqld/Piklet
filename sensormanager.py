@@ -1,6 +1,6 @@
 from model.sensor import Sensor, ThreadedSensor
 from event.eventhandler import EventHandler
-import os
+import os, traceback
 from tkinter import *
 
 class SensorManager:
@@ -112,7 +112,12 @@ class SensorManager:
             self.sensors[sensorID] = sensor
             print("Enabled {}".format(sensorID))
         except:
-            print("Error enabling {}".format(sensorID))
+            msg = ("="*10)+"[ Sensor Error ]"+("="*10)
+
+            print(msg)
+            traceback.print_exc()
+            print("="*len(msg))
+
             self.createInfoDialog("Error enabling {}".format(sensorID))
 
     def createInfoDialog(self, message):

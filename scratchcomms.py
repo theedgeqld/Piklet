@@ -82,18 +82,17 @@ class ScratchComms:
             has sorted through all the key-value pairs.
             """
 
-            #try:
+            try:
+                while len(packet) >= 2:
+                    key, value = packet[0], packet[1]
+                    key = eval(key)
+                    self.variables[key] = value
+                    EventHandler.callEvent("variable-updated", (key, value))
 
-            while len(packet) >= 2:
-                key, value = packet[0], packet[1]
-                key = eval(key)
-                self.variables[key] = value
-                EventHandler.callEvent("variable-updated", (key, value))
-
-                del packet[0]
-                del packet[0]
-            #except:
-                #print("Error occured.")
+                    del packet[0]
+                    del packet[0]
+            except:
+                print("Error parsing packet in scratchcomms. Nothing critical.")
 
         elif command == "broadcast":
             value = eval(packet[1])
