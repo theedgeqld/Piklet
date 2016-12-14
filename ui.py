@@ -86,9 +86,13 @@ class Application:
         for sensor in self.getFilesInDirectory(dir="/opt/Piklet/sensors"):
             if sensor == "motor" and sensor not in self.widgets:
                 motorName = "motorL"
-            else:
+                self.widgets[motorName] = {}
+            elif sensor == "motor" and sensor in self.widgets:
                 motorName = "motorR"
-            self.widgets[motorName] = {}
+                self.widgets[motorName] = {}
+            else:
+                self.widgets[sensor] = {}
+
 
             widgetDict = self.widgets[sensor]
 
