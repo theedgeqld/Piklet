@@ -22,7 +22,7 @@ class Server:
 
         self.sensors = SensorManager(self.scratch)
 
-    def start(self):
+    def start(self, onDie=None):
         """
         Called when server starts
         :return:
@@ -30,6 +30,10 @@ class Server:
         self.startupEdgeCase()
         self.running = True
         self.loop()
+
+        if onDie:
+            onDie()
+
 
     def startupEdgeCase(self):
         LB1930MC(pins=Piklet.pins["ML"]).stop()
@@ -97,7 +101,11 @@ class Server:
 
 
             else:
-                self.sensors.tick()
+                try:
+                    self.sensors.tick()
+                except RuntimeError:
+                    pass
+
                 self.scratch.tick()
 
                 if self.connected == False:

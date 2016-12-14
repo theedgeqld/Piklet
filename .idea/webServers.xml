@@ -2,8 +2,8 @@
 <project version="4">
   <component name="WebServers">
     <option name="servers">
-      <webServer id="78be38b5-f086-4ae4-baa0-ba6a79d5dc95" name="TheEdgeSLQ" url="http://192.168.137.184">
-        <fileTransfer host="192.168.137.184" port="22" accessType="SFTP" password="dfd8dfcbdfd9dfdadfc8dfcfdfd8dfd8dfd3" username="pi">
+      <webServer id="78be38b5-f086-4ae4-baa0-ba6a79d5dc95" name="TheEdgeSLQ" url="http://192.168.137.55">
+        <fileTransfer host="192.168.137.55" port="22" accessType="SFTP" password="dfd8dfcbdfd9dfdadfc8dfcfdfd8dfd8dfd3" username="pi">
           <advancedOptions>
             <advancedOptions dataProtectionLevel="Private" />
           </advancedOptions>
